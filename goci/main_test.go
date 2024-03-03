@@ -13,8 +13,9 @@ func TestRun(t *testing.T) {
 		out    string
 		expErr error
 	}{
-		{name: "success", proj: "./testdata/tool/", out: "Go Build: SUCCESS\nGo Test: SUCCESS\n", expErr: nil},
+		{name: "success", proj: "./testdata/tool/", out: "Go Build: SUCCESS\nGo Test: SUCCESS\nGo fmt: SUCCESS\n", expErr: nil},
 		{name: "fail", proj: "./testdata/toolErr", out: "", expErr: &stepErr{step: "go build"}},
+		{name: "failFormat", proj: "./testdata/toolFmtErr", out: "", expErr: &stepErr{step: "go fmt"}},
 	}
 
 	for _, tc := range testCases {
@@ -23,11 +24,11 @@ func TestRun(t *testing.T) {
 			err := run(tc.proj, &out)
 			if tc.expErr != nil {
 				if err == nil {
-					t.Errorf("Expected error: %q. Got 'nil' instead.", tc.expErr)
+					t.Errorf("\nExp: %q.\nGot: 'nil' instead.", tc.expErr)
 					return
 				}
 				if !errors.Is(err, tc.expErr) {
-					t.Errorf("Expected error: %q. Got %q.", tc.expErr, err)
+					t.Errorf("\nExp: %q.\nGot %q.", tc.expErr, err)
 				}
 				return
 			}
